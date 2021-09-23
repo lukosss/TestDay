@@ -2,6 +2,13 @@
 
 namespace App\Providers;
 
+use App\Events\AppleNotificationReceived;
+use App\Events\Cancel;
+use App\Events\DidFailToRenew;
+use App\Events\DidRenew;
+use App\Listeners\CancelSubscriptionListener;
+use App\Listeners\RenewSubscriptionListener;
+use App\Listeners\SendAppleNotification;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -17,6 +24,18 @@ class EventServiceProvider extends ServiceProvider
     protected $listen = [
         Registered::class => [
             SendEmailVerificationNotification::class,
+        ],
+        AppleNotificationReceived::class => [
+            SendAppleNotification::class,
+        ],
+        DidRenew::class => [
+            RenewSubscriptionListener::class,
+        ],
+        DidFailToRenew::class => [
+            CancelSubscriptionListener::class,
+        ],
+        Cancel::class => [
+            CancelSubscriptionListener::class,
         ],
     ];
 
