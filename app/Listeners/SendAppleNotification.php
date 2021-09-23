@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\AppleNotificationReceived;
+use App\Events\Cancel;
 use App\Events\DidRenew;
 use App\Events\InitialBuy;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -28,20 +29,22 @@ class SendAppleNotification
      */
     public function handle(AppleNotificationReceived $event)
     {
-        switch ($event->notification->getPaymentType()) {
+        switch ($event->getNotification()->getPaymentType()) {
             case 'DID_RENEW':
                 //turi perduoti ir adam_id ir user_id
-                DidRenew::dispatch($event->notification);
+                DidRenew::dispatch($event->getNotification(), $event->getUser());
                 break;
             case 'INITIAL_BUY':
-                InitialBuy::dispatch($event->notification);
+                InitialBuy::dispatch($event->getNotification());
                 break;
             case 'DID_FAIL_TO_RENEW':
-                DidRenew::dispatch($event->notification);
+                DidRenew::dispatch($event->getNotification());
                 break;
             case 'CANCEL':
-                DidRenew::dispatch($event->notification);
+                Cancel::dispatch($event->getNotification());
                 break;
+            default:
+                throw new \LogicException('No such event');
         }
     }
 }

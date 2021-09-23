@@ -6,5 +6,5 @@ namespace App\Domain\Notification\Interface;
 
 interface NotificationServiceInterface
 {
-    public function execute();
+    public function execute(array $notification);
 }

@@ -2,6 +2,8 @@
 
 namespace App\Events;
 
+use App\Domain\Notification\Dto\AppleNotification;
+use App\Domain\Notification\Dto\User;
 use App\Domain\Notification\Interface\PaymentEventInterface;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
@@ -15,14 +17,15 @@ class DidRenew implements PaymentEventInterface
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    /**
-     * Create a new event instance.
-     *
-     * @return void
-     */
-    public function __construct()
+
+    private AppleNotification $notification;
+    private User $user;
+
+
+    public function __construct(AppleNotification $notification, User $user)
     {
-        //
+        $this->notification = $notification;
+        $this->user = $user;
     }
 
     /**
@@ -37,6 +40,6 @@ class DidRenew implements PaymentEventInterface
 
     public function getUser()
     {
-        // TODO: Implement getUser() method.
+        return $this->user;
     }
 }

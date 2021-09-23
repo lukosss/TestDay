@@ -4,7 +4,7 @@
 namespace App\Domain\Notification\Dto;
 
 
-class Notification
+class AppleNotification
 {
 
     private $adam_id;

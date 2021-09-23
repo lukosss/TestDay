@@ -26,6 +26,10 @@ class RenewSubscriptionListener
      */
     public function handle(DidRenew $event)
     {
-        //
+        //gaunam useri
+        $event->getUser()->getUserId();
+        //atnaujinam sio userio subscription duomenis pagal jo id
+
+        //issiunciam notificationa useriui kad pratesta subscription
     }
 }

@@ -2,7 +2,8 @@
 
 namespace App\Events;
 
-use App\Domain\Notification\Dto\Notification;
+use App\Domain\Notification\Dto\AppleNotification;
+use App\Domain\Notification\Dto\User;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
@@ -16,12 +17,30 @@ class AppleNotificationReceived
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
 
-    public Notification $notification;
+    private AppleNotification $notification;
+    private User $user;
 
 
-    public function __construct(Notification $notification)
+    public function __construct(AppleNotification $notification, User $user)
     {
         $this->notification = $notification;
+        $this->user = $user;
+    }
+
+    /**
+     * @return AppleNotification
+     */
+    public function getNotification(): AppleNotification
+    {
+        return $this->notification;
+    }
+
+    /**
+     * @return User
+     */
+    public function getUser(): User
+    {
+        return $this->user;
     }
 
     /**

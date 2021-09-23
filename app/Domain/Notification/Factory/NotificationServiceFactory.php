@@ -10,12 +10,27 @@ use Illuminate\Http\Request;
 class NotificationServiceFactory
 {
 
-    public function build(string $provider, Request $request): NotificationServiceInterface
+    /**
+     * @var AppleNotificationService
+     */
+    private AppleNotificationService $appleNotificationService;
+
+    public function __construct(AppleNotificationService $appleNotificationService)
     {
-        if ($provider === 'apple')
-        //check if apple or android or stripe or etc..
-        {
-            return new AppleNotificationService($request);
+        $this->appleNotificationService = $appleNotificationService;
+    }
+
+    public function build(string $provider): NotificationServiceInterface
+    {
+        switch ($provider) {
+            case 'apple':
+                return $this->appleNotificationService;
+            case 'android':
+                // return $this->androidNotificationService;
+                break;
+
+            default:
+                throw new \LogicException('No such provider');
         }
     }
 }

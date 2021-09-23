@@ -19,8 +19,9 @@ class NotificationsController extends Controller
 
     public function store(string $provider, Request $request): NotificationServiceInterface
     {
+//        TODO: might implement deserializer here
         $notification = $request->json();
 
-        return $this->factory->build($provider, $notification);
+        return $this->factory->build($provider)->execute($notification);
     }
 }

@@ -3,7 +3,8 @@
 namespace App\Domain\Notification\Service;
 
 
-use App\Domain\Notification\Dto\Notification;
+use App\Application\Apple\Notification\Serializer\Denormalizer\NotificationDenormalizer;
+use App\Domain\Notification\Dto\AppleNotification;
 use App\Domain\Notification\Interface\NotificationServiceInterface;
 use App\Events\AppleNotificationReceived;
 use Illuminate\Http\Request;
@@ -11,25 +12,27 @@ use Illuminate\Http\Request;
 class AppleNotificationService implements NotificationServiceInterface
 {
 
-    private Request $request;
+    private NotificationDenormalizer $denormalizer;
+    private UserResolverService $userResolverService;
 
-    public function __construct(Request $request)
+    public function __construct(NotificationDenormalizer $denormalizer, UserResolverService $userResolverService)
     {
-        $this->request = $request;
+        $this->denormalizer = $denormalizer;
+        $this->userResolverService = $userResolverService;
     }
 
-    public function execute()
+    public function execute(array $notification): void
     {
-        //get the body from apple notification service
-        $notification = $this->getPaymentInfo();
-        AppleNotificationReceived::dispatch($notification);
+        $object = $this->buildAppleNotification($notification);
+        $user = $this->userResolverService->getApplePaymentUser($notification);
+        AppleNotificationReceived::dispatch($object, $user);
     }
 
-    private function getPaymentInfo(): Notification
+    private function buildAppleNotification(array $notification): AppleNotification
     {
-//        denormalizer logic;
-//        returns Notification Dto;
-//        return $this->denormalizer->denormalize();
-        return new Notification();
+        return $this->denormalizer->denormalize(
+            $notification,
+            AppleNotification::class
+        );
     }
 }
